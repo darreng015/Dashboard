@@ -12,14 +12,18 @@
  const collection = client.db('darr').collection('dashboard');
  const bodyParser = require('body-parser');
  const cors = require('cors');
- const port = process.nextTick.PORT || 1111;
+ const port = process.env.PORT || 1111;
  const swaggerUi = require('swagger-ui-express');
  const swaggerDocument = require('./swagger.json');
  const package = require('./package.json');
 
+swaggerDocument.info.version = package.version;
+app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
   app.use(bodyParser.urlencoded({extended:true}));
   app.use(bodyParser.json());
   app.use(cors());
+
   app.get("/", (req,res)=>{
     res.send('Health good');
   });
@@ -82,7 +86,7 @@ app.get('/user/:id',async (req,res) => {
 
 app.put('/updateUser',async(req,res) => {
     await collection.updateOne(
-        {_id:new Mongo.ObjectId(req.body.id)},
+        {_id:new Mongo.ObjectId(req.params.id)},
         {
             $set:{
                 name:req.body.name,
@@ -102,6 +106,31 @@ app.delete('/deleteUser',async(req,res) => {
         _id:new Mongo.ObjectId(req.body._id)
     })
     res.send('User Deleted')
+})
+
+//soft delete
+app.put('/deactivateUser',async(req,res) => {
+    await collection.updateOne(
+        {_id:new Mongo.ObjectId(req.body._id)},
+        {
+            $set:{
+                isActive:false 
+            }
+        }
+    )
+    res.send('User Deactivated')
+})
+
+app.put('/activateUser',async(req,res) => {
+    await collection.updateOne(
+        {_id:new Mongo.ObjectId(req.body._id)},
+        {
+            $set:{
+                isActive:true 
+            }
+        }
+    )
+    res.send('User activated')
 })
 
   app.listen(port, () =>{
