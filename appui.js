@@ -27,7 +27,7 @@ app.set('view engine', 'ejs');
  app.use(bodyParser.json());
  app.use(cors());
 
- app.get("/", (req,res)=>{
+ app.get("/health", (req,res)=>{
    res.send('Health good');
  });
 

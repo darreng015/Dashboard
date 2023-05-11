@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node apiwithoutui.js",
+    "dev": "nodemon apiwithoutui.js",
+    "ui": "nodemon apiwithui.js",
+    "test": "mocha --timeout 10000"
   },
   "keywords": [],
   "author": "",
